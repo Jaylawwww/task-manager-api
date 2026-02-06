@@ -1,0 +1,40 @@
+name: task_manager_api
+
+services:
+    mysql:
+        image: mysql:8.0
+        platform: linux/amd64
+        restart: unless-stopped
+        environment:
+         MYSQL_ROOT_PASSWORD: Task_root_password
+         MYSQL_DATABASE: task_manager_api
+         MYSQL_USER: Task_user
+         MYSQL_PASSWORD: Task_password
+        ports:
+        - "3307:3306"
+        volumes:
+        - mysql_data:/var/lib/mysql
+        networks:
+        - Task_network
+    
+    phpmyadmin:
+       image: phpmyadmin/phpmyadmin
+       platform: linux/amd64
+       restart: unless-stopped
+       environment:
+        PMA_HOST: mysql
+        PMA_USER: Task_user
+        PMA_PASSWORD: Task_password
+       ports:
+        - "8082:80"
+       depends_on:
+        - mysql
+       networks:
+        - Task_network
+
+volumes:
+    mysql_data:
+        name: api_mysql_data
+
+networks:
+    Task_network:
